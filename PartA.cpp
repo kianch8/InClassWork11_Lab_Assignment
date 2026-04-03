@@ -59,6 +59,12 @@ public:
         if (prev) prev->next = curr->next;
         else head = curr->next;
         delete curr;
+
+        // Bug #1
+        //delete curr;        // Intentional double-free (for testing)
+
+        // Bug #2
+        //cout << "Deleted node id: " << curr->id << endl;
         count--;
     }
 
@@ -126,7 +132,8 @@ public:
 
     ~NodeList() 
     {
-        clear();
+        // Commented out destructor body to demonstrate memory leak (for testing)
+        // clear();
     }
 };
 
@@ -157,6 +164,13 @@ int main()
     list.removeNode(2);
     cout << "\nAfter removing node 2:\n";
     list.display();
+
+
+    // Bug #3
+    ListNode* temp = new ListNode{99, "Test", nullptr};
+    delete temp;
+
+    cout << temp->id << endl; // Use-after-free (undefined behavior)
 
     return 0;
 }
